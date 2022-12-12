@@ -26,11 +26,13 @@ my_ili_handler:
   # save flags
   pushfq
 
-  mov 128(%rsp), %bl
+  mov 128(%rsp), %r14
+
+  mov (%r14), %bl
 
   #we have RIP pointing to the OPCODE
   mov $0, %rdi
-  cmpb %bl, $0x0f
+  cmpb $0x0f, %bl
   je .call_What_To_Do_2bytes
     //call what to do with 1 byte.000f
     mov %bl, %dil
@@ -38,7 +40,7 @@ my_ili_handler:
 
     jmp .continue
   .call_What_To_Do_2bytes:
-    mov 1(%rip), %dil
+    mov 1(%r14), %dil
     mov $2, %rsi
 
 .continue:
@@ -48,7 +50,7 @@ my_ili_handler:
   je .pass_to_old_handler
   
   mov %rax, %rdi
-  mov 128(%rsp), %rcx
+  mov %r14, %rcx
   add %rsi, %rcx
   mov %rcx, 128(%rsp)
   jmp .exit
